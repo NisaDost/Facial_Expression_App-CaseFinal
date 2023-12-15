@@ -11,10 +11,11 @@
 
     <Button
         android:id="@+id/capture_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="160dp"
+        android:layout_height="50dp"
         android:layout_gravity="bottom|center_horizontal"
         android:layout_marginBottom="20dp"
+        android:background="@color/MauPurple"
         android:text="@string/button_capture" />
 
 

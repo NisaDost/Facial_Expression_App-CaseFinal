@@ -24,10 +24,8 @@ import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
-import org.opencv.core.MatOfByte;
 import org.opencv.core.Rect;
 import org.opencv.imgcodecs.Imgcodecs;
-import org.opencv.imgproc.Imgproc;
 
 import java.io.File;
 import java.io.IOException;
@@ -110,45 +108,53 @@ public class CameraActivity extends Activity implements CameraBridgeViewBase.CvC
     }
 
     private void captureImage() {
-        // Ensure the folder for saving images exists
-        File folder = new File(IMAGE_FOLDER_PATH);
-        if (!folder.exists()) {
-            folder.mkdirs();
+        try {
+            // Ensure the folder for saving images exists
+            File folder = new File(IMAGE_FOLDER_PATH);
+            if (!folder.exists()) {
+                folder.mkdirs();
+            }
+
+            // Create a filename with a timestamp to avoid overwriting
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+            String fileName = IMAGE_FOLDER_PATH + "captured_image_" + timeStamp + ".jpg";
+
+            // Capture the current frame from the camera view
+            Mat rgbaImage = mRgba.clone();  // Make a copy to avoid modifying the displayed frame
+
+            // Crop the image to include only the face (adjust the coordinates accordingly)
+            Rect faceRect = facialExpressionRecognition.getFaceCoordinates(rgbaImage); // Replace x, y, width, height with your face region coordinates
+            if (faceRect != null) {
+                // Crop the image to include only the face
+                Mat croppedImage = new Mat(rgbaImage, faceRect);
+
+                // Save the cropped image to the specified file
+                Imgcodecs.imwrite(fileName, croppedImage);
+
+                // Release the Mats to avoid memory leaks
+                rgbaImage.release();
+                croppedImage.release();
+
+                // Notify the media scanner to recognize the new image
+                MediaScannerConnection.scanFile(this, new String[]{fileName}, null, new MediaScannerConnection.OnScanCompletedListener() {
+                    @Override
+                    public void onScanCompleted(String path, Uri uri) {
+                        Log.i(TAG, "Image scanned: " + path);
+                    }
+                });
+            }
+            // Implement further processing with the captured image data
+            // For example, you can save it to a file or send it to a server
+
+            Toast.makeText(CameraActivity.this, "Image Captured and Saved!", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Log the exception or display a message to help identify the issue
+            Toast.makeText(CameraActivity.this, "Error capturing image", Toast.LENGTH_SHORT).show();
+            Log.d(TAG,"Error: " +  e.getMessage());
         }
-
-        // Create a filename with a timestamp to avoid overwriting
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
-        String fileName = IMAGE_FOLDER_PATH + "captured_image_" + timeStamp + ".jpg";
-
-        // Capture the current frame from the camera view
-        Mat rgbaImage = mRgba.clone();  // Make a copy to avoid modifying the displayed frame
-
-        // Crop the image to include only the face (adjust the coordinates accordingly)
-        Rect faceRect = facialExpressionRecognition.getFaceCoordinates(rgbaImage); // Replace x, y, width, height with your face region coordinates
-        if (faceRect != null) {
-            // Crop the image to include only the face
-            Mat croppedImage = new Mat(rgbaImage, faceRect);
-
-            // Save the cropped image to the specified file
-            Imgcodecs.imwrite(fileName, croppedImage);
-
-            // Release the Mats to avoid memory leaks
-            rgbaImage.release();
-            croppedImage.release();
-
-            // Notify the media scanner to recognize the new image
-            MediaScannerConnection.scanFile(this, new String[]{fileName}, null, new MediaScannerConnection.OnScanCompletedListener() {
-                @Override
-                public void onScanCompleted(String path, Uri uri) {
-                    Log.i(TAG, "Image scanned: " + path);
-                }
-            });
-        }
-        // Implement further processing with the captured image data
-        // For example, you can save it to a file or send it to a server
-
-        Toast.makeText(CameraActivity.this, "Image Captured and Saved!", Toast.LENGTH_SHORT).show();
     }
+
 
 
 
