@@ -169,10 +169,20 @@ public class facialExpressionRecognition {
             String emotion_s=get_emotion_text(emotion_v);
             // now put text on original frame(mat_image)
             //             input/output    text: Angry (2.934234)
-            Imgproc.putText(mat_image,emotion_s+" ("+emotion_v+")",
-                    new Point((int)faceArray[i].tl().x+10,(int)faceArray[i].tl().y+20),
-                    1,1.5,new Scalar(0,0,255,150),2);
-            //      use to scale text      color     R G  B  alpha    thickness
+
+            // Choose your background color (e.g., green with alpha value 150)
+            Scalar backgroundColor = new Scalar(0, 255, 0, 150);
+
+            // Draw a filled rectangle as the background for the text
+            Point textStart = new Point((int) faceArray[i].tl().x + 10, (int) faceArray[i].tl().y + 20);
+            Point textEnd = new Point(textStart.x + 150, textStart.y - 30); // Adjust the size as needed
+            Imgproc.rectangle(mat_image, textStart, textEnd, backgroundColor, Core.FILLED);
+
+            // Draw the text on top of the filled rectangle
+            Imgproc.putText(mat_image, emotion_s,
+                    new Point(textStart.x, textStart.y - 5), // Slightly adjust the position
+                    1, 1.5, new Scalar(0, 0, 0), 2); // Use white color for the text
+            //      use to scale text   color    R   G  B  alpha    thickness
 
             // select device and run
             // Everything is working fine
