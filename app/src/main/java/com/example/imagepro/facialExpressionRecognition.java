@@ -261,6 +261,36 @@ public class facialExpressionRecognition {
         return  fileChannel.map(FileChannel.MapMode.READ_ONLY,startOffset,declaredLength);
 
     }
+    public Rect getFaceCoordinates(Mat mat_image) {
+        // Convert the input frame to grayscale
+        Mat grayscaleImage = new Mat();
+        Imgproc.cvtColor(mat_image, grayscaleImage, Imgproc.COLOR_RGBA2GRAY);
 
+        // Set the height and width
+        height = grayscaleImage.height();
+        width = grayscaleImage.width();
 
+        // Define the minimum height of the face in the original image
+        int absoluteFaceSize = (int) (height * 0.1);
+
+        // Create MatofRect to store faces
+        MatOfRect faces = new MatOfRect();
+
+        // Check if cascadeClassifier is loaded
+        if (cascadeClassifier != null) {
+            // Detect faces in the frame
+            cascadeClassifier.detectMultiScale(grayscaleImage, faces, 1.1, 2, 2,
+                    new Size(absoluteFaceSize, absoluteFaceSize), new Size());
+        }
+
+        // Convert it to an array
+        Rect[] faceArray = faces.toArray();
+
+        // If at least one face is detected, return the coordinates of the first one
+        if (faceArray.length > 0) {
+            return faceArray[0];
+        } else {
+            return null; // Return null if no face is detected
+        }
+    }
 }
