@@ -1,3 +1,10 @@
 <resources>
-    <string name="app_name">ImagePro</string>
+    <string name="app_name">Emotion Detection App</string>
+    <string name="lecture_name">SE 464 01\nCase Studies in\nSoftware Engineering I</string>
+    <string name="project_name">Face and Emotion\n Detection Application</string>
+    <string name="authors">Group Members:\nNisa Dost - 200706004\nSena Yılmaz - 200706021</string>
+    <string name="button_text">Open Camera</string>
+    <string name="button_capture">Capture Face</string>
+
+
 </resources>

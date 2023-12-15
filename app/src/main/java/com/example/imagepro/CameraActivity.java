@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.SurfaceView;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
@@ -31,6 +32,7 @@ public class CameraActivity extends Activity implements CameraBridgeViewBase.CvC
     private CameraBridgeViewBase mOpenCvCameraView;
     // call java class
     private facialExpressionRecognition facialExpressionRecognition;
+    private Button captureButton;
 
     private BaseLoaderCallback mLoaderCallback =new BaseLoaderCallback(this) {
         @Override
