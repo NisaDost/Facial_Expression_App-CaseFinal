@@ -26,6 +26,7 @@ import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.Rect;
 import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.imgproc.Imgproc;
 
 import java.io.File;
 import java.io.IOException;
@@ -101,7 +102,7 @@ public class CameraActivity extends Activity implements CameraBridgeViewBase.CvC
         try {
             int inputSize = 48;
             facialExpressionRecognition = new facialExpressionRecognition(getAssets(), CameraActivity.this,
-                    "model300.tflite", inputSize);
+                    "newmodel.tflite", inputSize); //model burada seçiliyor
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -117,10 +118,13 @@ public class CameraActivity extends Activity implements CameraBridgeViewBase.CvC
 
             // Create a filename with a timestamp to avoid overwriting
             String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
-            String fileName = IMAGE_FOLDER_PATH + "captured_image_" + timeStamp + ".jpg";
+            String fileName = IMAGE_FOLDER_PATH + "emotion_detection_" + facialExpressionRecognition.emotionName + timeStamp + ".jpg";
 
             // Capture the current frame from the camera view
             Mat rgbaImage = mRgba.clone();  // Make a copy to avoid modifying the displayed frame
+
+            // Convert RGBA to BGR before saving
+            Imgproc.cvtColor(rgbaImage, rgbaImage, Imgproc.COLOR_RGBA2BGR);
 
             // Crop the image to include only the face (adjust the coordinates accordingly)
             Rect faceRect = facialExpressionRecognition.getFaceCoordinates(rgbaImage); // Replace x, y, width, height with your face region coordinates
@@ -143,6 +147,7 @@ public class CameraActivity extends Activity implements CameraBridgeViewBase.CvC
                     }
                 });
             }
+
             // Implement further processing with the captured image data
             // For example, you can save it to a file or send it to a server
 
@@ -154,6 +159,7 @@ public class CameraActivity extends Activity implements CameraBridgeViewBase.CvC
             Log.d(TAG,"Error: " +  e.getMessage());
         }
     }
+
 
 
 

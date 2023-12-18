@@ -44,6 +44,8 @@ public class facialExpressionRecognition {
     // it is use to implement gpu in interpreter
     private GpuDelegate gpuDelegate=null;
 
+    public String emotionName;
+
     // now define cascadeClassifier for face detection
     private CascadeClassifier cascadeClassifier;
     // now call this in CameraActivity
@@ -229,6 +231,7 @@ public class facialExpressionRecognition {
         else {
             val="Happy";
         }
+        emotionName =  val;
         return val;
     }
 
